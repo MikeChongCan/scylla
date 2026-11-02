@@ -20,7 +20,7 @@ class Worker:
         """
 
         with sync_playwright() as p:
-            self.browser = p.chromium.launch()
+            self.browser = p.chromium.launch(channel="chrome", chromium_sandbox=True)
 
         self.requests_session = requests.Session()
         self.requests_session.headers['User-Agent'] = DEFAULT_USER_AGENT
