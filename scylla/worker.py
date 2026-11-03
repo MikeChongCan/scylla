@@ -1,3 +1,5 @@
+import os
+
 import requests
 from playwright.sync_api import sync_playwright
 from pyquery import PyQuery
@@ -20,7 +22,12 @@ class Worker:
         """
 
         with sync_playwright() as p:
-            self.browser = p.chromium.launch(channel="chrome", chromium_sandbox=True)
+            # Docker images set SCYLLA_BUNDLED_CHROMIUM=1: they ship Playwright's Chromium and the
+            # container is the isolation boundary. Elsewhere, use patched system Chrome with the sandbox on.
+            if os.environ.get('SCYLLA_BUNDLED_CHROMIUM') == '1':
+                self.browser = p.chromium.launch()
+            else:
+                self.browser = p.chromium.launch(channel="chrome", chromium_sandbox=True)
 
         self.requests_session = requests.Session()
         self.requests_session.headers['User-Agent'] = DEFAULT_USER_AGENT

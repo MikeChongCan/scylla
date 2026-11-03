@@ -38,6 +38,8 @@ VOLUME /var/www/scylla
 
 RUN python3 -m playwright install chromium --with-deps
 
+ENV SCYLLA_BUNDLED_CHROMIUM=1
+
 EXPOSE 8899
 EXPOSE 8081
 
